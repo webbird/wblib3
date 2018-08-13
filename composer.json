@@ -2,6 +2,7 @@
     "name": "webbird/wblib3",
     "description": "PHP libraries bundle including FormBuilder, ListBuilder, Calendar, and more",
 	"homepage": "https://github.com/webbird/wblib3",
+	"keywords": [],
     "type": "library",
     "license": "MIT",
 	"authors": [
@@ -12,7 +13,8 @@
         }
     ],
     "require": {
-        "php": ">=7.1"
+        "php": ">=7.1",
+		"nicmart/tree": ">=0.2.7"
     },
 	"autoload": {
         "psr-0": { "wblib": "src/" }
