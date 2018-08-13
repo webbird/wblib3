@@ -11,12 +11,12 @@
             "email": "blackbird@webbird.de",
             "homepage": "https://www.webbird.de/"
         }
-    ],
+    ]
     "require": {
         "php": ">=7.1",
 		"nicmart/tree": ">=0.2.7"
     },
 	"autoload": {
         "psr-0": { "wblib": "src/" }
-    },
+    }
 }
