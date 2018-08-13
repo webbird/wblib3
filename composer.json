@@ -1,0 +1,20 @@
+{
+    "name": "webbird/wblib3",
+    "description": "PHP libraries bundle including FormBuilder, ListBuilder, Calendar, and more",
+	"homepage": "https://github.com/webbird/wblib3",
+    "type": "library",
+    "license": "MIT",
+	"authors": [
+        {
+            "name": "Bianka Martinovic",
+            "email": "blackbird@webbird.de",
+            "homepage": "https://www.webbird.de/"
+        }
+    ],
+    "require": {
+        "php": ">=7.1"
+    },
+	"autoload": {
+        "psr-0": { "wblib": "src/" }
+    },
+}
