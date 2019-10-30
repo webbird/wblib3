@@ -1,0 +1,151 @@
+<div class="navbar">
+    <button type="button" class="btn btn-navbar-highlight btn-large btn-primary" data-toggle="collapse" data-target=".nav-collapse">                            NAVIGATION
+        <span class="icon-chevron-down icon-white">
+        </span>
+    </button>
+    <div class="nav-collapse">                                FULLMENU
+        <ul id="" class="nav nav-pills ddmenu">
+            <li id="" class="item first dropdown">
+                <a href="//localhost:444/site1/Demo">Demo</a>
+                <ul id="" class="nav nav-pills ddmenu">
+                    <li id="" class="item first dropdown">
+                        <a href="//localhost:444/site1/Demo/Demo 2">Demo 2</a>
+                        <ul id="" class="nav nav-pills ddmenu">
+                            <li id="" class="item first last">
+                                <a href="//localhost:444/site1/Demo/Demo 2/Demo 4">Demo 4</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="" class="item last dropdown">
+                        <a href="//localhost:444/site1/Demo/Demo 3">Demo 3</a>
+                        <ul id="" class="nav nav-pills ddmenu">
+                            <li id="" class="item first last dropdown">
+                                <a href="//localhost:444/site1/Demo/Demo 3/Demo 5">Demo 5</a>
+                                <ul id="" class="nav nav-pills ddmenu">
+                                    <li id="" class="item first last">
+                                        <a href="//localhost:444/site1/Demo/Demo 3/Demo 5/Demo 6">Demo 6</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li id="" class="item active">
+                <a href="//localhost:444/site1/Homepage">Homepage</a>
+            </li>
+            <li id="" class="item last">
+                <a href="//localhost:444/site1/Homepage englisch">Homepage englisch</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<ul class="nav nav-pills ddmenu">
+    <li class="nav-item">
+        <a class="nav-link dropdown-toggle" href="//localhost:444/site1/Demo" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demo
+            <span class="sr-only">(current)
+            </span></a>
+        <ul class="dropdown-menu">
+            <li class="nav-item">
+                <a class="nav-link dropdown-toggle" href="//localhost:444/site1/Demo/Demo 2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demo 2</a>
+                <ul class="dropdown-menu sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="//localhost:444/site1/Demo/Demo 2/Demo 4">Demo 4</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link dropdown-toggle" href="//localhost:444/site1/Demo/Demo 3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demo 3</a>
+                <ul class="dropdown-menu sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link dropdown-toggle" href="//localhost:444/site1/Demo/Demo 3/Demo 5" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demo 5</a>
+                        <ul>
+                            <li class="nav-item">
+                                <a class="nav-link" href="//localhost:444/site1/Demo/Demo 3/Demo 5/Demo 6">Demo 6</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="//localhost:444/site1/Homepage">Homepage</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="//localhost:444/site1/Homepage englisch">Homepage englisch</a>
+    </li>
+</ul>
+
+<div class="navbar">
+    <button type="button" class="btn btn-navbar-highlight btn-large btn-primary" data-toggle="collapse" data-target=".nav-collapse">                        NAVIGATION
+        <span class="icon-chevron-down icon-white">
+        </span>
+    </button>
+    <div class="nav-collapse">
+        <ul class="nav nav-pills ddmenu">
+            <li>
+            <a href="index.html">Home</a>
+            </li>
+            <li>
+            <a href="about.html">About</a>
+            </li>
+            <li class="active dropdown">
+                <a href="page.html" class="dropdown-toggle">Page
+                    <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li>
+                    <a href="full.html">Full Page</a>
+            </li>
+            <li>
+            <a href="2-column.html">Two Column</a>
+            </li>
+            <li>
+            <a href="3-column.html">Three Column</a>
+            </li>
+            <li>
+            <a href="../documentation/index.html">Documentation</a>
+            </li>
+// ---- bs business template
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Dropdown Item &nbsp;»</a>
+                <ul class="dropdown-menu sub-menu">
+                    <li>
+                    <a href="#">Dropdown Item</a>
+            </li>
+// ------------- orig bootstrap 4
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+// ------------- orig bootstrap 4
+            <li>
+            <a href="#">Dropdown Item</a>
+            </li>
+            <li>
+            <a href="#">Dropdown Item</a>
+            </li>
+        </ul>
+        </li>
+        </ul>
+        </li>
+        <li>
+        <a href="services.html">Services</a>
+        </li>
+        <li>
+        <a href="portfolio.html">Portfolio</a>
+        </li>
+        <li>
+        <a href="contact.php">Contact</a>
+        </li>
+        </ul>
+    </div>
+</div>

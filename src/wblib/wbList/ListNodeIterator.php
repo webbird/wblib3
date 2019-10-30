@@ -18,8 +18,6 @@
 
 namespace wblib\wbList;
 
-require __DIR__.'/vendor/autoload.php';
-
 use \Tree\Node\Node as Node;
 use \Tree\Node\NodeInterface as NodeInterface;
 

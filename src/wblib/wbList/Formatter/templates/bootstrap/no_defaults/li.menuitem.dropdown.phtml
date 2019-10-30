@@ -1,0 +1,8 @@
+<li id="<?php
+    echo $this->getOption('id_prefix','li');
+    if($this->useValueAsId('li')): echo $item->getValue(); else: echo $item->getID(); endif;
+?>"<?php if (!empty($liclasses)):?> class="<?php echo $liclasses; ?>"<?php endif; ?>>
+<?php if($item->hasLink()): ?><a<?php if(!empty($aclasses)): ?> class="<?php echo $aclasses; ?>"<?php endif; ?> href="<?php echo $item->getLink() ?>" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php endif; ?>
+<?php echo $item->getValue(); ?>
+<?php if($item->is_current): ?> <span class="sr-only">(current)</span><?php endif; ?>
+<?php if($item->hasLink()): ?></a><?php endif; ?>

@@ -11,15 +11,16 @@ if (!class_exists('\wblib\wbForms\View\Bootstrap\Horizontal',false))
 {
     class Horizontal extends \wblib\wbForms\View
     {
-        protected static $template      = '<div class="form-group row">{label}<div class="col-sm-10">{element}{helptext}</div></div>';
+        protected static $template      = '<div class="form-group row">{label}<div class="col-9">{element}{helptext}</div></div>';
         protected static $errortemplate = '<div class="alert alert-danger">{errors}</div>';
         protected static $infotemplate  = '<div class="alert alert-info">{info}</div>';
         public $properties  = array(
             'cssclasses'    => array(
                 'form'     => '',
-                'fieldset' => 'col-sm-12 form-group',
-                'label'    => 'col-sm-2 control-label',
+                'fieldset' => 'col-12 form-group',
+                'label'    => 'col-3 control-label',
                 'text'     => 'form-control',
+                'email'    => 'form-control',
                 'select'   => 'form-control',
             )
         );
@@ -27,7 +28,7 @@ if (!class_exists('\wblib\wbForms\View\Bootstrap\Horizontal',false))
         public function render($form) 
         {
             $form->setAttribute('class',$this->properties['cssclasses']['form']);
-            
+
             $elements = $form->getElements();
             $buttons  = array();
             $lines    = array();
@@ -44,13 +45,22 @@ if (!class_exists('\wblib\wbForms\View\Bootstrap\Horizontal',false))
             }
 
             // check if we have buttons
-            if(!count($buttons)) {
-                $e = $form->addElement(new \wblib\wbForms\Element\Button('Submit'));
+            if($form->countElements('submit')==0) {
+                $e = $form->addElement(new \wblib\wbForms\Element\Submit('Submit', array('label'=>'Submit','type'=>'submit')));
                 $buttons[] = $e->render();
-				
+            } else {
+                $btn       = $form->getElementsOfType('submit');
+                if(count($btn)>0) {
+                    foreach($btn as $b) {
+                        $buttons[] = $b->render();
+                    }
+                }
             }
 
-            $buttonline = '<div class="form-group row buttonline"><div class="col-md-2"></div><div class="col-md-10">'.implode("&nbsp;",$buttons).'</div></div>';
+            $buttonline = null;
+            if($form->properties['_auto_buttons']===true) {
+                $buttonline = '<div class="form-group row buttonline"><div class="col-3"></div><div class="col-9">'.implode("&nbsp;",$buttons).'</div></div>';
+            }
             $errors     = null;
             $info       = null;
 
@@ -100,12 +110,18 @@ if (!class_exists('\wblib\wbForms\View\Bootstrap\Horizontal',false))
                     $e->setAttribute('class',$this->properties['cssclasses'][$type]);
                 }
             }
+
+            if($e->hasError()) {
+                $e->setAttribute('class',$e->getAttribute('class').' alert alert-danger');
+            }
+
             if($e->getHelptext()!=='') {
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // TODO: Richtiger Name
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 $e->setAttribute('aria-describedby',$e->getID().'_helpText');
             }
+
             $helptext = (
                   (strlen($e->getHelptext()))
                 ? str_ireplace(
@@ -123,7 +139,7 @@ if (!class_exists('\wblib\wbForms\View\Bootstrap\Horizontal',false))
                         $label = str_ireplace(
                             array('{label}'),
                             array($e->getLabel()),
-                            '<div class="col-sm-2 col-form-label">{label}</div>'
+                            '<div class="col-3 col-form-label">{label}</div>'
                         );
                     }
                     $e->setAttribute('class','form-check-input');
@@ -147,10 +163,20 @@ if (!class_exists('\wblib\wbForms\View\Bootstrap\Horizontal',false))
                     $output = $e->render();
                     break;
                 case $e instanceof \wblib\wbForms\Element\Button:
+                    if(in_array($e->getType(),array('submit','button')) && !$e->hasAttribute('class')) {
+                        $e->setAttribute('class','btn btn-secondary');
+                    }
+                    $output = str_ireplace(
+                        array('{label}','{element}','{helptext}'),
+                        array('<div class="col-3"></div>',$e->render(),$helptext),
+                        self::$template
+                    );
+                    break;
+                case $e instanceof \wblib\wbForms\Element\Submit:
                     if($e->getType()=='submit' && !$e->hasAttribute('class')) {
                         $e->setAttribute('class','btn btn-primary');
                     }
-                    $buttons[] = $e->render();
+                    #$output = $e->render();
                     break;
                 default:
                     $label = (
@@ -181,9 +207,9 @@ if (!class_exists('\wblib\wbForms\View\Bootstrap\Horizontal',false))
             if($element->isRequired())
 				 $label .= ' <span class="required">*</span>';
             $output = str_ireplace(
-                array('{for}','{text}'),
-                array($element->getAttribute('id'),$label),
-                '<label for="{for}" class="col-sm-2 col-form-label">{text}</label>'
+                array('{for}','{text}','{css}'),
+                array($element->getAttribute('id'),$label,$this->properties['cssclasses']['label']),
+                '<label for="{for}" class="{css}">{text}</label>'
             );
             return $output;
         }   // end function renderLabel()

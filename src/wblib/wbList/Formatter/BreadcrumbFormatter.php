@@ -20,19 +20,10 @@ namespace wblib\wbList\Formatter;
 
 use \wblib\wbList\ListNodeIterator as ListNodeIterator;
 
-if (!class_exists('\wblib\wbList\Formatter\ListFormatter', false))
+if (!class_exists('\wblib\wbList\Formatter\BreadcrumbFormatter', false))
 {
-    class ListFormatter extends \wblib\wbList\Formatter
+    class BreadcrumbFormatter extends \wblib\wbList\Formatter
     {
-        /**
-         *
-         * @access public
-         * @return
-         **/
-        public function __construct(array $options = [])
-        {
-            $this->settings = array_merge(self::$defaults, $options);
-        }   // end function __construct()
 
         /**
          *
@@ -41,18 +32,15 @@ if (!class_exists('\wblib\wbList\Formatter\ListFormatter', false))
          **/
         public function render($tree)
         {
-            if (!is_object($tree) || $tree->getDepth()==0) {
+            if (!is_object($tree)) {
                 return false;
             }
-
             $this->tree = $tree;
+            $this->init($tree);
 
             $depth    = 1;
             $children = $tree->tree->getChildren();
             $nav      = '';
-
-            $this->init($tree);
-
             ob_start();
 
             // iterate elements
@@ -60,50 +48,27 @@ if (!class_exists('\wblib\wbList\Formatter\ListFormatter', false))
                 if ($item->getDepth() > $this->settings['maxdepth'] || $item->getDepth() < $this->settings['mindepth']) {
                     continue;
                 }
-                // close open lists when the depth decreases
-                if ($item->getDepth()<$depth) {
-                    for ($i=$depth;$i>$item->getDepth();$i--) {
-                        $nav .= '</ul></li>';
-                    }
+                if(!$item->is_in_trail && !$item->is_current) {
+                    continue;
                 }
                 $liclasses = $this->getClasses($item, 'li', $item->getDepth(), $item->hasChildren());
                 $aclasses  = $this->getClasses($item, 'a', $item->getDepth(), $item->hasChildren());
-
-                // default
-                if ($item->isLeaf()) {
-                    include $this->settings['tpldir'].'/li.menuitem.phtml';
-                    $nav .= ob_get_contents();
-                    ob_clean();
-                } elseif ($item->hasChildren()) {
-                    $ulclasses = $this->getClasses($item, 'ul', $item->getDepth()+1);
-                    include $this->settings['tpldir'].'/li.menuitem.dropdown.phtml';
-                    include $this->settings['tpldir'].'/ul.phtml';
-                    $nav .= ob_get_contents();
-                    ob_clean();
-                }
-                $depth   = $item->getDepth();
+                include $this->settings['tpldir'].'/li.menuitem.phtml';
+                $nav .= ob_get_contents();
+                ob_clean();
             }
 
             // outer ul
-            if($item) {
-                $ulclasses = $this->getClasses($item, 'ul', 1);
-            }
-
+            $ulclasses = $this->getClasses($item, 'ul', 1);
             include $this->settings['tpldir'].'/ul.phtml';
             $output = ob_get_contents();
             $output .= $nav;
 
-            // close all sub levels
-            while ($depth>1) {
-                $output .= "</ul></li>";
-                $depth--;
-            }
-
             // close outer level
             $output .= '</ul>';
 
-            ob_end_clean();
-
+            ob_clean();
+            ob_end_flush();
 
             return $output;
         }   // end function render()

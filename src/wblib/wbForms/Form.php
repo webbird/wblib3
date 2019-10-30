@@ -34,6 +34,7 @@ if (!class_exists('\wblib\wbForms\Form', false)) {
             'lang_path'      => null,
             'method'         => 'POST', // 'GET','POST'
             'novalidate'     => null,
+            '_auto_buttons'  => true,   // auto-add submit button
         );
         /**
          * form elements
@@ -89,9 +90,13 @@ if (!class_exists('\wblib\wbForms\Form', false)) {
         /**
          * add element to internal elements array
          **/
-        public function addElement(Element $element)
+        public function addElement(Element $element,$after=null)
         {
+            if($after) {
+                self::insert($this->elements, $after, 0, $element);
+            } else {
             $this->elements[$element->getID()] = $element;
+            }
             return $element;
         }   // end function addElement()
         
@@ -115,6 +120,22 @@ if (!class_exists('\wblib\wbForms\Form', false)) {
          * @access public
          * @return
          **/
+        public function countElements(string $type) : int
+        {
+            $count = 0;
+            foreach($this->elements as $e) {
+                if($e->getType()==$type) {
+                    $count++;
+                }
+            }
+            return $count;
+        }   // end function countElements()
+
+        /**
+         *
+         * @access public
+         * @return
+         **/
         public function getData()
         {
             return $this->data;
@@ -125,13 +146,17 @@ if (!class_exists('\wblib\wbForms\Form', false)) {
          * @access public
          * @return
          **/
-        public function getElement($name)
+        public function getElement(string $name)
         {
+            // name may be prefixed with "form_item_", so look for both
+            if (!isset($this->elements[$name]) && !isset($this->elements['form_item_'.$name])) {
             // to avoid chaining errors, we create a hidden element here
-            if (!isset($this->elements[$name])) {
                 return $this->addElement(new Element\Hidden($name));
             }
-            return $this->elements[$name];
+            return
+                isset($this->elements[$name])
+                ? $this->elements[$name]
+                : $this->elements['form_item_'.$name];
         }   // end function getElement()
 
         /**
@@ -141,6 +166,22 @@ if (!class_exists('\wblib\wbForms\Form', false)) {
         {
             return $this->elements;
         }   // end function getElements()
+
+        /**
+         *
+         * @access public
+         * @return
+         **/
+        public function getElementsOfType(string $type) : array
+        {
+            $elements = array();
+            foreach($this->elements as $e) {
+                if($e->getType()==$type) {
+                    $elements[] = $e;
+                }
+            }
+            return $elements;
+        }   // end function countElements()
 
         /**
          *
@@ -176,8 +217,13 @@ if (!class_exists('\wblib\wbForms\Form', false)) {
                 $data = $_GET;
             }
             // check if we have data for any of the form elements
-            foreach ($this->elements as $e) {
-                if ($e->getType() == 'submit' && isset($data[$e->getName()])) {
+            foreach($this->elements as $e) {
+                // simplest: submit button
+                if($e->getType() == 'submit' && isset($data[$e->getName()])) {
+                    return true;
+                }
+                // any of the required fields
+                if($e->isRequired() && isset($data[$e->getName()])) {
                     return true;
                 }
             }
@@ -298,6 +344,7 @@ if (!class_exists('\wblib\wbForms\Form', false)) {
             foreach ($this->elements as $element) {
                 $name = $element->getName();
                 if (isset($this->data[$name])) {
+
                     #if(is_array($this->data[$name])) {
                     #    $element->setOptions($this->data[$name]);
                     #} else {
@@ -328,6 +375,7 @@ if (!class_exists('\wblib\wbForms\Form', false)) {
                     $name  = isset($item['name'])
                         ? $item['name']
                         : 'xxx';
+
                     $form->addElement(new $type($name, $item));
                     if (isset($item['value'])) {
                         $form->setData(array($name=>$item['value']));
@@ -338,5 +386,36 @@ if (!class_exists('\wblib\wbForms\Form', false)) {
                 return false;
             }
         }   // end function loadFromFile()
+
+
+        /**
+         * Replace lemon and lime with apple
+         * array_splice_assoc($fruit, 'lemon', 'grape', array('apple' => 'red'));
+         * Replace cherry with strawberry
+         * array_splice_assoc($fruit, 'cherry', 1, array('strawberry' => 'red'));
+         **/
+        protected function insert(array &$arr,string $key,int $length, $replacement)
+        {
+            $replacement = array($replacement->getName() => $replacement);
+            $key_indices = array_flip(array_keys($arr));
+            $offset      = null;
+            if(isset($arr[$key])) {
+                $offset = $key_indices[$key];
+            } elseif(isset($arr['form_item_'.$key])) {
+                $offset = $key_indices['form_item_'.$key];
+            } else {
+                $offset = 0;
+            }
+            $offset++;
+            if (isset($arr[$length]) && is_string($length)) {
+                $length = $key_indices[$length] - $offset;
+            }
+
+            $this->elements = array_merge(
+                array_slice($arr, 0, $offset, true),
+                $replacement,
+                array_slice($arr, $offset + $length, null, true)
+            );
+        }
     }
 }

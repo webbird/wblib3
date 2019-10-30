@@ -2,8 +2,7 @@
 
 namespace wblib\wbForms;
 
-if (!class_exists('\wblib\wbForms\Base',false))
-{
+if (!class_exists('\wblib\wbForms\Base', false)) {
     abstract class Base
     {
         /**
@@ -21,12 +20,12 @@ if (!class_exists('\wblib\wbForms\Base',false))
         /**
          * accessor to wbLang if available
          **/
-        public  static $lang_path  = NULL;
-        private static $wblang     = NULL;
+        public static $lang_path  = null;
+        private static $wblang     = null;
         /**
          * stores the name of the current form
          **/
-        public  static $form_id    = NULL;
+        public static $form_id    = null;
 
         /**
          * configure element
@@ -39,10 +38,11 @@ if (!class_exists('\wblib\wbForms\Base',false))
          * @param  array
          * @return void
          **/
-    	public function configure(array $properties = null) {
-            if(!empty($properties)) {
-                foreach($properties as $key => $val) {
-                    $this->setAttribute($key,$val);
+        public function configure(array $properties = null)
+        {
+            if (!empty($properties)) {
+                foreach ($properties as $key => $val) {
+                    $this->setAttribute($key, $val);
                 }
             }
         }   // end function configure()
@@ -64,8 +64,8 @@ if (!class_exists('\wblib\wbForms\Base',false))
          **/
         public function getAttribute($attribute)
         {
-            if(!empty($this->properties)) {
-                if(array_key_exists($attribute,$this->properties)) {
+            if (!empty($this->properties)) {
+                if (array_key_exists($attribute, $this->properties)) {
                     return $this->properties[$attribute];
                 }
             }
@@ -73,20 +73,30 @@ if (!class_exists('\wblib\wbForms\Base',false))
         }   // end function getAttribute()
         
 
-    	public function getAttributes($ignore = "") {
+        public function getAttributes($ignore = "")
+        {
             $str = "";
-    		if(!empty($this->properties)) {
-    			if(!is_array($ignore))
-    				$ignore = array($ignore);
-    			$attributes = array_diff(array_keys($this->properties), $ignore);
-    			foreach($attributes as $attribute) {
-       				if(is_string($this->properties[$attribute]) && strlen($this->properties[$attribute])) {
+            if (!empty($this->properties)) {
+                if (!is_array($ignore)) {
+                    $ignore = array($ignore);
+                }
+                $attributes = array_diff(array_keys($this->properties), $ignore);
+                foreach ($attributes as $attribute) {
+                    if (
+                           substr_compare($attribute,'_',0,1) != 0  // skip internals
+                        && is_string($this->properties[$attribute])
+                        && strlen($this->properties[$attribute])
+                    ) {
                         $str .= ' ' . $attribute;
-    					#$str .= '="' . $this->filter($this->properties[$attribute]) . '"';
-    					$str .= '="' . $this->properties[$attribute] . '"';
+                        #$str .= '="' . $this->filter($this->properties[$attribute]) . '"';
+                        $str .= '="' . $this->properties[$attribute] . '"';
                     }
-    			}
-    		}
+                    // readonly, required
+                    if(is_bool($this->properties[$attribute]) && $this->properties[$attribute] === true) {
+                        $str .= ' ' . $attribute .'="'.$attribute.'"';
+                    }
+                }
+            }
             return $str;
         }   // end function getAttributes()
 
@@ -97,7 +107,7 @@ if (!class_exists('\wblib\wbForms\Base',false))
          **/
         public function getErrors()
         {
-            return implode("<br />\n",self::$errors);
+            return implode("<br />\n", self::$errors);
         }   // end function getErrors()
         
         /**
@@ -107,9 +117,9 @@ if (!class_exists('\wblib\wbForms\Base',false))
          * @param  integer  $length
          * @return string
          **/
-        protected static function generateName($length=8,$prefix='')
+        protected static function generateName($length=8, $prefix='')
         {
-            for(
+            for (
                    $code_length = $length, $newcode = '';
                    strlen($newcode) < $code_length;
                    $newcode .= chr(!rand(0, 2) ? rand(48, 57) : (!rand(0, 1) ? rand(65, 90) : rand(97, 122)))
@@ -141,7 +151,7 @@ if (!class_exists('\wblib\wbForms\Base',false))
          **/
         public function humanize($string)
         {
-            return ucfirst(str_replace('_',' ',$string));
+            return ucfirst(str_replace('_', ' ', $string));
         }   // end function humanize()
 
         /**
@@ -151,20 +161,20 @@ if (!class_exists('\wblib\wbForms\Base',false))
          **/
         public function setAttribute($key, $val)
         {
-            if(
-                   substr($key,0,1) != '_'
+            if (
+                   substr($key, 0, 1) != '_'
                 && (
-                       array_key_exists($key,$this->properties)
-                    || ( isset($this->universal) && array_key_exists($key,$this->universal) )
+                       array_key_exists($key, $this->properties)
+                    || (isset($this->universal) && array_key_exists($key, $this->universal))
                 )
             ) {
-                switch($key) {
+                switch ($key) {
                     case 'lang_path':
                         self::$lang_path = $val;
-                        self::lang()->addFile(self::lang()->current(),$val);
+                        self::lang()->addFile(self::lang()->current(), $val);
                         break;
                     case 'required':
-                        if(strlen($val)) {
+                        if (strlen($val)) {
                             $this->properties['required']      = 'required'; // valid XHTML
                             $this->properties['aria-required'] = 'true';     // WAI-ARIA
                         }
@@ -176,7 +186,7 @@ if (!class_exists('\wblib\wbForms\Base',false))
                         $this->properties[$key] = $val;
                         break;
                 }
-                if($this->debug) {
+                if ($this->debug) {
                     echo sprintf(
                         "<pre>option [%20s] for element [%20s] set to [%s]!</pre><br />",
                         $key,
@@ -185,7 +195,7 @@ if (!class_exists('\wblib\wbForms\Base',false))
                     );
                 }
             } else {
-                if($this->debug) {
+                if ($this->debug) {
                     echo "setting internal or unknown option [$key] is prohibited!<br />";
                 }
             }
@@ -200,40 +210,37 @@ if (!class_exists('\wblib\wbForms\Base',false))
         }
         
 
-       /**
-         * convenience methods
-         **/
-        public function getName()              { return $this->name; }
-        public function getTemplate()          { return $this->template; }
+        /**
+          * convenience methods
+          **/
+        public function getName()
+        {
+            return $this->name;
+        }
+        public function getTemplate()
+        {
+            return $this->template;
+        }
 
         /**
          * accessor to wbLang (if available)
          **/
         public function lang()
         {
-            #self::log('> lang()',7);
-            if(!self::$wblang && !self::$wblang == -1)
-            {
-                #self::log('Trying to load wbLang',7);
-                try
-                {
-                    include_once dirname(__FILE__).'/../wbLang.php';
+            if (!self::$wblang && !self::$wblang == -1) {
+                try {
                     self::$wblang = \wblib\wbLang::getInstance();
                     $lang_path = self::$lang_path;
 
-#echo sprintf('wbLang loaded, current language [%s], lang path [%s]',self::$wblang->current(), $lang_path),"<br />";
                     // auto-add lang file by lang_path global
-                    if(null !== $lang_path)
-                    {
-                        if(is_dir($lang_path)) {
-                            #self::log(sprintf('adding global lang path [%s]',$lang_path,7);
+                    if (null !== $lang_path) {
+                        if (is_dir($lang_path)) {
                             self::$wblang->addPath($lang_path);
-                            if(
-                                   file_exists(self::path(pathinfo($lang_path,PATHINFO_DIRNAME).'/languages/'.self::$wblang->current().'.php'))
-                                || file_exists(self::path(pathinfo($lang_path,PATHINFO_DIRNAME).'/languages/'.strtoupper(self::$wblang->current()).'.php'))
-                                || file_exists(self::path(pathinfo($lang_path,PATHINFO_DIRNAME).'/languages/'.strtolower(self::$wblang->current()).'.php'))
+                            if (
+                                   file_exists(self::path(pathinfo($lang_path, PATHINFO_DIRNAME).'/languages/'.self::$wblang->current().'.php'))
+                                || file_exists(self::path(pathinfo($lang_path, PATHINFO_DIRNAME).'/languages/'.strtoupper(self::$wblang->current()).'.php'))
+                                || file_exists(self::path(pathinfo($lang_path, PATHINFO_DIRNAME).'/languages/'.strtolower(self::$wblang->current()).'.php'))
                             ) {
-#echo sprintf('adding file [%s]',self::path(pathinfo($lang_path,PATHINFO_DIRNAME).'/languages/'.strtoupper(self::$wblang->current()).'.php')), "<br />";
                                 self::$wblang->addFile(self::$wblang->current());
                             }
                         }
@@ -242,46 +249,44 @@ if (!class_exists('\wblib\wbForms\Base',false))
                     $callstack = debug_backtrace();
                     $caller    = array_pop($callstack);
                     $i         = 0; // avoid deep recursion
-                    while(!strcasecmp(dirname(__FILE__),$caller['file']))
-                    {
-                        if($i>=3) break;
+                    while (!strcasecmp(dirname(__FILE__), $caller['file'])) {
+                        if ($i>=3) {
+                            break;
+                        }
                         $i++;
                         $caller    = array_pop($callstack);
                     }
-                    if(isset($caller['file']))
-                    {
-                        if(is_dir(self::path(pathinfo($caller['file'],PATHINFO_DIRNAME).'/languages')))
-                        {
+                    if (isset($caller['file'])) {
+                        if (is_dir(self::path(pathinfo($caller['file'], PATHINFO_DIRNAME).'/languages'))) {
                             #self::log(sprintf('adding path [%s]',self::path(pathinfo($caller['file'],PATHINFO_DIRNAME).'/languages')),7);
-                            self::$wblang->addPath(self::path(pathinfo($caller['file'],PATHINFO_DIRNAME).'/languages'));
+                            self::$wblang->addPath(self::path(pathinfo($caller['file'], PATHINFO_DIRNAME).'/languages'));
                         }
-                        if(
-                               file_exists(self::path(pathinfo($caller['file'],PATHINFO_DIRNAME).'/languages/'.self::$wblang->current().'.php'))
-                            || file_exists(self::path(pathinfo($caller['file'],PATHINFO_DIRNAME).'/languages/'.strtoupper(self::$wblang->current()).'.php'))
-                            || file_exists(self::path(pathinfo($caller['file'],PATHINFO_DIRNAME).'/languages/'.strtolower(self::$wblang->current()).'.php'))
+                        if (
+                               file_exists(self::path(pathinfo($caller['file'], PATHINFO_DIRNAME).'/languages/'.self::$wblang->current().'.php'))
+                            || file_exists(self::path(pathinfo($caller['file'], PATHINFO_DIRNAME).'/languages/'.strtoupper(self::$wblang->current()).'.php'))
+                            || file_exists(self::path(pathinfo($caller['file'], PATHINFO_DIRNAME).'/languages/'.strtolower(self::$wblang->current()).'.php'))
                         ) {
                             #self::log(sprintf('adding file [%s]',self::$wblang->current()),7);
                             self::$wblang->addFile(self::$wblang->current());
                         }
                         // This is for BlackCat CMS, filtering backend paths
-                        if(isset($caller['args']) && isset($caller['args'][0]) && is_scalar($caller['args'][0]) && file_exists($caller['args'][0]))
-                        {
-                            if(is_dir(self::path(pathinfo($caller['args'][0],PATHINFO_DIRNAME).'/languages')))
-                                self::$wblang->addPath(self::path(pathinfo($caller['args'][0],PATHINFO_DIRNAME).'/languages'));
-                            if(file_exists(self::path(pathinfo($caller['args'][0],PATHINFO_DIRNAME).'/languages/'.self::$wblang->current().'.php')))
+                        if (isset($caller['args']) && isset($caller['args'][0]) && is_scalar($caller['args'][0]) && file_exists($caller['args'][0])) {
+                            if (is_dir(self::path(pathinfo($caller['args'][0], PATHINFO_DIRNAME).'/languages'))) {
+                                self::$wblang->addPath(self::path(pathinfo($caller['args'][0], PATHINFO_DIRNAME).'/languages'));
+                            }
+                            if (file_exists(self::path(pathinfo($caller['args'][0], PATHINFO_DIRNAME).'/languages/'.self::$wblang->current().'.php'))) {
                                 self::$wblang->addFile(self::$wblang->current());
+                            }
                         }
                     }
-                }
-                catch(Exception $e)
-                {
-                    #self::log(sprintf(
-                    #    'Unable to load wbLang: [%s]',$e->getMessage()
-                    #),7);
+                } catch (Exception $e) {
+                    // unable to load wbLang; as it is optional, it's no error
                     self::$wblang = -1;
                 }
             }
-            if(is_object(self::$wblang)) return self::$wblang;
+            if (is_object(self::$wblang)) {
+                return self::$wblang;
+            }
         }   // end function lang()
 
         /**
@@ -294,27 +299,27 @@ if (!class_exists('\wblib\wbForms\Base',false))
         public static function path($path)
         {
             // remove / at end of string; this will make sanitizePath fail otherwise!
-            $path       = preg_replace( '~/{1,}$~', '', $path );
+            $path       = preg_replace('~/{1,}$~', '', $path);
             // make all slashes forward
-            $path       = str_replace( '\\', '/', $path );
+            $path       = str_replace('\\', '/', $path);
             // bla/./bloo ==> bla/bloo
             $path       = preg_replace('~/\./~', '/', $path);
             // resolve /../
             // loop through all the parts, popping whenever there's a .., pushing otherwise.
             $parts      = array();
-            foreach ( explode('/', preg_replace('~/+~', '/', $path)) as $part )
-            {
-                if ($part === ".." || $part == '')
+            foreach (explode('/', preg_replace('~/+~', '/', $path)) as $part) {
+                if ($part === ".." || $part == '') {
                     array_pop($parts);
-                elseif ($part!="")
+                } elseif ($part!="") {
                     $parts[] = $part;
+                }
             }
             $new_path = implode("/", $parts);
             // windows
-            if ( ! preg_match( '/^[a-z]\:/i', $new_path ) )
+            if (! preg_match('/^[a-z]\:/i', $new_path)) {
                 $new_path = '/' . $new_path;
+            }
             return $new_path;
         }   // end function path()
-
     }
 }

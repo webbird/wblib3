@@ -12,6 +12,7 @@ if (!class_exists('\wblib\wbForms\View\Bootstrap\HorizontalSmall',false))
                 'fieldset' => 'col-sm-12',
                 'label'    => 'col-sm-2 control-label',
                 'text'     => 'form-control form-control-sm',
+                'email'    => 'form-control form-control-sm',
                 'select'   => 'form-control form-control-sm',
             )
         );

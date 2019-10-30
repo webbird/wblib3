@@ -53,7 +53,11 @@ if (!class_exists('\wblib\wbForms\View\Bootstrap\Vertical',false))
                 $buttons[] = $e->render();
             }
 
+            $buttonline = null;
+            if($form->properties['_auto_buttons']===true) {
             $buttonline = '<div class="form-group row buttonline"><div class="col-md-2"></div><div class="col-md-10">'.implode("&nbsp;",$buttons).'</div></div>';
+            }
+            
             $errors     = null;
             $info       = null;
 

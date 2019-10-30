@@ -18,18 +18,22 @@
 
 namespace wblib\wbList;
 
-require __DIR__.'/vendor/autoload.php';
-
 use \Tree\Node\Node as Node;
 use \Tree\Node\NodeInterface as NodeInterface;
 
-if (!class_exists('\wblib\wbList\ListNode', false))
-{
+if (!class_exists('\wblib\wbList\ListNode', false)) {
     class ListNode extends Node
     {
+        /**
+         * @var
+         **/
         protected $guid;
         protected $id;
+        protected $link;
+        public    $is_in_trail = false;
+        public    $is_current  = false;
 
+ 
         /**
          * overrides the constructor to add a unique GUID
          *
@@ -41,32 +45,41 @@ if (!class_exists('\wblib\wbList\ListNode', false))
             parent::__construct();
             $this->guid = $this->createGUID();
         }   // end function __construct()
-        
-        /**
-         * dynamic getter
-         **/
-        public function __get($property) {
-            if (property_exists($this, $property)) {
-                return $this->$property;
-            }
-        }
-        /**
-         * dynamic setter
-         **/
-        public function __set($property, $value) {
-            $this->$property = $value;
-            return $this;
-        }
 
-        public function createGUID()
+        /**
+         *
+         * @access public
+         * @return
+         **/
+        public function asArray()
         {
-            $s = strtoupper(md5(uniqid(rand(),true)));
+            return array(
+                'guid'        => $this->guid,
+                'id'          => $this->getID(),
+                'link'        => $this->getLink(),
+                'is_in_trail' => $this->is_in_trail,
+                'is_current'  => $this->is_current,
+                'value'       => $this->getValue(),
+                'level'       => $this->getDepth(),
+            );
+        }   // end function asArray()
+        
+
+        /**
+         * creates a guid for each item; allows to clearly identify each item
+         *
+         * @access public
+         * @return string
+         **/
+        public function createGUID() : string
+        {
+            $s = strtoupper(md5(uniqid(rand(), true)));
             $guidText =
-                substr($s,0,8) . '-' .
-                substr($s,8,4) . '-' .
-                substr($s,12,4). '-' .
-                substr($s,16,4). '-' .
-                substr($s,20);
+                substr($s, 0, 8) . '-' .
+                substr($s, 8, 4) . '-' .
+                substr($s, 12, 4). '-' .
+                substr($s, 16, 4). '-' .
+                substr($s, 20);
             return $guidText;
         }   // end function createGUID()
 
@@ -89,7 +102,7 @@ if (!class_exists('\wblib\wbList\ListNode', false))
          **/
         public function isFirst() : bool
         {
-            return ( $this->getParent()->getChildren()[0]->guid == $this->guid );
+            return ($this->getParent()->getChildren()[0]->guid == $this->guid);
         }   // end function isFirst()
 
         /**
@@ -101,15 +114,46 @@ if (!class_exists('\wblib\wbList\ListNode', false))
         public function isLast() : bool
         {
             $last = array_values(array_slice($this->getParent()->getChildren(), -1))[0];
-            return ( $last->guid == $this->guid );
+            return ($last->guid == $this->guid);
         }   // end function isLast()
-        
-        public function getID() {
+
+        public function getID()
+        {
             return $this->id;
         }
-        public function setID($id) {
+        public function setID($id)
+        {
             $this->id = $id;
         }
+        /**
+         *
+         * @access public
+         * @return
+         **/
+        public function setLink(string $link)
+        {
+            $this->link = $link;
+        }   // end function setLink()
+        
+        /**
+         *
+         * @access public
+         * @return
+         **/
+        public function getLink()
+        {
+            return $this->link;
+        }   // end function getLink()
+        
+        /**
+         *
+         * @access public
+         * @return
+         **/
+        public function hasLink() : bool
+        {
+            return isset($this->link);
+        }   // end function hasLink()
         
     }   // ---------- end class ListNode ----------
 }

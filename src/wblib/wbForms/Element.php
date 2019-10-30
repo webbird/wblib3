@@ -13,6 +13,8 @@ if (!class_exists('\wblib\wbForms\Element',false))
         protected $name       = NULL;
         protected $id         = NULL;
         protected $label      = NULL;
+        protected $haserror   = false;
+        protected $errmsg     = NULL;
         protected $haslabel   = true;
         protected $helptext   = NULL;
         protected $validation = array();
@@ -117,6 +119,7 @@ if (!class_exists('\wblib\wbForms\Element',false))
             if(count($properties)>0) {
                 $this->configure($properties);
             }
+
         }   // end function __construct()
 
         /**
@@ -137,6 +140,17 @@ if (!class_exists('\wblib\wbForms\Element',false))
     		}
     	}   // end function addValidation()
 
+        /**
+         *
+         * @access public
+         * @return
+         **/
+        public function copyAs(string $name)
+        {
+            $copy = clone $this;
+            $copy->name = $name;
+            return $copy;
+        }   // end function copyAs()
 
         /**
          * check assigned validation rules for Validation\Required
@@ -193,6 +207,21 @@ if (!class_exists('\wblib\wbForms\Element',false))
     	}   // end function render()
 
         /**
+         * set error state for element; error message is optional
+         *
+         * @access public
+         * @param  string $msg
+         * @return void
+         **/
+        public function setError($msg=null) {
+            $this->haserror = true;
+            if($msg) {
+                $this->errmsg = $msg;
+            }
+        }
+
+
+        /**
          * convenience methods
          **/
         public function getClass()             { return $this->class; }
@@ -202,11 +231,14 @@ if (!class_exists('\wblib\wbForms\Element',false))
         public function getName()              { return $this->name; }
         public function getType()              { return $this->type; }
         public function getValue()             { return $this->properties['value']; }
+        public function hasError()             { return $this->haserror; }
         public function hasLabel()             { return $this->haslabel; }
-        public function setData($data)         { $this->configure(array('options'=>$data)); }
         public function setClass($class)       { $this->class = $class; }
-        public function setLabel($label)       { $this->configure(array('label'=>$label)); }
+        public function setData($data)         { $this->configure(array('options'=>$data)); }
+        public function setLabel($label)       { $this->label = $label; }
+        public function setName($name)         { $this->name  = $name;  }
         public function setPlaceholder($label) { $this->configure(array('placeholder'=>$label)); }
+        public function setReadonly($bool)     { $this->configure(array('readonly'=>$bool)); }
         public function setValue($value)       { $this->configure(array('value'=>$value)); }
         // set current value; same as setData() for most elements
         
