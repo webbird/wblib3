@@ -251,7 +251,7 @@ if (!class_exists('\wblib\wbList\Tree', false))
                 // find root element
                 foreach($array as $item) {
                     if($item[$this->idKey] == $root_id) {
-echo "adding root node ", $item[$this->valueKey], "as first element<br />";
+#echo "adding root node ", $item[$this->valueKey], "as first element<br />";
                         // create node
                         $node = new ListNode();
                         // set value
@@ -283,7 +283,6 @@ echo "adding root node ", $item[$this->valueKey], "as first element<br />";
                 if(isset($this->posKey)) {
                     $opt[$this->posKey] = SORT_ASC;
                 }
-
                 $array = self::sortArrayByFields(
                     $array, $opt
                 );
