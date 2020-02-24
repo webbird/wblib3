@@ -59,13 +59,13 @@ if (!class_exists('\wblib\wbList\Formatter\BreadcrumbFormatter', false))
             }
 
             // outer ul
-            $ulclasses = $this->getClasses($item, 'ul', 1);
-            include $this->settings['tpldir'].'/ul.phtml';
+            $ulclasses = $this->getClasses($item, 'ol', 1);
+            include $this->settings['tpldir'].'/ol.phtml';
             $output = ob_get_contents();
             $output .= $nav;
 
             // close outer level
-            $output .= '</ul>';
+            $output .= '</ol>';
 
             ob_clean();
             ob_end_flush();
