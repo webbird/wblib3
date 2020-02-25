@@ -2,9 +2,9 @@
 
 namespace wblib\wbForms\Element;
 
-if (!class_exists('\wblib\wbForms\Element\Text',false))
+if (!class_exists('\wblib\wbForms\Element\Color',false))
 {
-    class Text extends \wblib\wbForms\Element
+    class Color extends \wblib\wbForms\Element
     {
         public $type = 'text';
         public $properties = array(
